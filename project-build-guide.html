@@ -1,0 +1,648 @@
+<title>Build Guide — Two Paths to Submission</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --paper:#eef1f3;
+    --paper-raised:#ffffff;
+    --ink:#141a1f;
+    --muted:#5b6670;
+    --line:#c7d0d6;
+    --accent-arm:#147d6f;
+    --accent-arm-soft:#dcece8;
+    --accent-sound:#b8621b;
+    --accent-sound-soft:#f1e2d2;
+    --warn:#a83a2f;
+    --warn-soft:#f6dfda;
+    --code-bg:#0f1417;
+    --code-ink:#dbe4e8;
+  }
+  :root[data-theme="dark"]{
+    --paper:#12161a;
+    --paper-raised:#1a2126;
+    --ink:#e7ecef;
+    --muted:#92a0aa;
+    --line:#2a3339;
+    --accent-arm:#33b39f;
+    --accent-arm-soft:#173029;
+    --accent-sound:#e08a3c;
+    --accent-sound-soft:#33220f;
+    --warn:#e07a6c;
+    --warn-soft:#3a201c;
+    --code-bg:#0a0d0f;
+    --code-ink:#d8e2e6;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#12161a;
+      --paper-raised:#1a2126;
+      --ink:#e7ecef;
+      --muted:#92a0aa;
+      --line:#2a3339;
+      --accent-arm:#33b39f;
+      --accent-arm-soft:#173029;
+      --accent-sound:#e08a3c;
+      --accent-sound-soft:#33220f;
+      --warn:#e07a6c;
+      --warn-soft:#3a201c;
+      --code-bg:#0a0d0f;
+      --code-ink:#d8e2e6;
+    }
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .label-face{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-weight:600;
+    letter-spacing:.04em;
+  }
+  .data-face{
+    font-family:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  a{color:inherit;}
+  h1,h2,h3{text-wrap:balance;}
+
+  .shell{
+    display:grid;
+    grid-template-columns:250px minmax(0,1fr);
+    gap:0;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  @media (max-width:860px){
+    .shell{grid-template-columns:1fr;}
+    nav.toc{position:static !important;height:auto !important;border-right:none !important;border-bottom:1px solid var(--line);}
+  }
+
+  header.masthead{
+    max-width:1180px;
+    margin:0 auto;
+    padding:3rem 1.75rem 1.75rem;
+    border-bottom:1px solid var(--line);
+  }
+  header.masthead .eyebrow{
+    font-size:.72rem;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 .6rem;
+  }
+  header.masthead h1{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-weight:600;
+    font-size:clamp(1.6rem,3.6vw,2.5rem);
+    letter-spacing:.01em;
+    margin:0 0 .55rem;
+  }
+  header.masthead p.sub{
+    max-width:62ch;
+    color:var(--muted);
+    margin:0;
+    font-size:1.05rem;
+  }
+
+  nav.toc{
+    position:sticky;
+    top:0;
+    align-self:start;
+    height:100vh;
+    overflow-y:auto;
+    border-right:1px solid var(--line);
+    padding:1.75rem 1.1rem 2rem;
+  }
+  nav.toc .tocgroup{margin-bottom:1.6rem;}
+  nav.toc .tochead{
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    font-size:.72rem;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:.5rem;
+  }
+  nav.toc .swatch{width:.6rem;height:.6rem;border-radius:1px;flex:none;}
+  nav.toc a{
+    display:block;
+    font-size:.88rem;
+    padding:.28rem .4rem;
+    border-radius:3px;
+    color:var(--ink);
+    text-decoration:none;
+    opacity:.82;
+  }
+  nav.toc a:hover{opacity:1;background:var(--paper-raised);}
+  nav.toc a:focus-visible{outline:2px solid var(--accent-arm);outline-offset:1px;}
+
+  main{padding:0 1.75rem 4rem;min-width:0;}
+  section.project{padding-top:2.6rem;}
+  section.project + section.project{
+    border-top:1px solid var(--line);
+    margin-top:2.6rem;
+  }
+
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    gap:.4rem;
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    padding:.28rem .6rem;
+    border-radius:3px;
+    margin-bottom:.9rem;
+  }
+  .tag.arm{background:var(--accent-arm-soft);color:var(--accent-arm);}
+  .tag.sound{background:var(--accent-sound-soft);color:var(--accent-sound);}
+
+  section.project h2{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-weight:600;
+    font-size:1.7rem;
+    margin:0 0 .3rem;
+  }
+  section.project > p.deck{
+    max-width:68ch;
+    color:var(--muted);
+    margin:0 0 1.8rem;
+  }
+
+  h3.subhead{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-weight:600;
+    font-size:1.05rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin:2.2rem 0 .9rem;
+    padding-bottom:.5rem;
+    border-bottom:1px solid var(--line);
+  }
+  .arm h3.subhead{border-color:var(--accent-arm);}
+  .sound h3.subhead{border-color:var(--accent-sound);}
+
+  p{max-width:68ch;}
+
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;}
+  table{width:100%;border-collapse:collapse;min-width:520px;}
+  th,td{
+    text-align:left;
+    padding:.55rem .8rem;
+    font-size:.92rem;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  td.wrap{white-space:normal;}
+  thead th{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-size:.72rem;
+    text-transform:uppercase;
+    color:var(--muted);
+    background:var(--paper-raised);
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  tfoot td{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    border-top:2px solid var(--line);
+    border-bottom:none;
+  }
+  td.num, th.num{text-align:right;font-variant-numeric:tabular-nums;}
+
+  .timeline{position:relative;margin:0 0 1rem;padding-left:0;}
+  .day{
+    display:grid;
+    grid-template-columns:3.2rem minmax(0,1fr);
+    gap:1rem;
+    padding:.9rem 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .day:last-child{border-bottom:none;}
+  .day .num{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-weight:600;
+    font-size:1.4rem;
+    color:var(--muted);
+  }
+  .arm .day .num{color:var(--accent-arm);}
+  .sound .day .num{color:var(--accent-sound);}
+  .day .title{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-weight:600;
+    font-size:.98rem;
+    margin:0 0 .3rem;
+  }
+  .day p{margin:0;font-size:.95rem;}
+
+  .callout{
+    border:1px solid var(--line);
+    border-left:4px solid var(--accent-arm);
+    background:var(--paper-raised);
+    border-radius:0 4px 4px 0;
+    padding:.9rem 1.1rem;
+    margin:1.2rem 0;
+  }
+  .sound .callout{border-left-color:var(--accent-sound);}
+  .callout.risk{border-left-color:var(--warn);background:var(--warn-soft);}
+  .callout p{margin:0;font-size:.95rem;max-width:none;}
+  .callout .ctitle{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-weight:600;
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin-bottom:.35rem;
+    display:block;
+  }
+
+  pre{
+    background:var(--code-bg);
+    color:var(--code-ink);
+    border-radius:4px;
+    padding:1rem 1.1rem;
+    overflow-x:auto;
+    font-size:.84rem;
+    line-height:1.55;
+  }
+  code{font-family:"Cascadia Code","Cascadia Mono",Consolas,"SF Mono",monospace;}
+  p code, li code{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    padding:.1rem .35rem;
+    border-radius:3px;
+    font-size:.85em;
+  }
+
+  ul.checklist{list-style:none;margin:0 0 1rem;padding:0;}
+  ul.checklist li{
+    position:relative;
+    padding-left:1.6rem;
+    margin-bottom:.5rem;
+    font-size:.95rem;
+    max-width:68ch;
+  }
+  ul.checklist li::before{
+    content:"";
+    position:absolute;
+    left:0;top:.28rem;
+    width:.85rem;height:.85rem;
+    border:1.5px solid var(--muted);
+    border-radius:2px;
+  }
+
+  ul.reflist{margin:0 0 1rem;padding-left:1.1rem;}
+  ul.reflist li{font-size:.92rem;margin-bottom:.3rem;max-width:68ch;}
+  ul.reflist a{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px;}
+
+  .compare{margin-top:2.6rem;padding-top:2.6rem;border-top:1px solid var(--line);}
+  .compare h2{
+    font-family:Bahnschrift,"Arial Narrow",Arial,sans-serif;
+    font-size:1.4rem;
+    margin:0 0 1rem;
+  }
+
+  footer.foot{
+    max-width:1180px;
+    margin:0 auto;
+    padding:2rem 1.75rem 3rem;
+    color:var(--muted);
+    font-size:.85rem;
+    border-top:1px solid var(--line);
+  }
+
+  @media (prefers-reduced-motion:no-preference){
+    a{transition:opacity .12s ease, background-color .12s ease;}
+  }
+</style>
+
+<header class="masthead">
+  <p class="eyebrow label-face">Sessional project · 8-day build window · budget ceiling 7,000 BDT</p>
+  <h1>Build Guide — Two Paths to Submission</h1>
+  <p class="sub">Full build plans for both proposals submitted to sir. Read whichever section gets picked — the other stays here as a fallback if scope needs to change mid-build.</p>
+</header>
+
+<div class="shell">
+  <nav class="toc label-face" aria-label="Table of contents">
+    <div class="tocgroup">
+      <div class="tochead"><span class="swatch" style="background:var(--accent-arm)"></span>Project A</div>
+      <a href="#arm-overview">Overview</a>
+      <a href="#arm-bom">Bill of materials</a>
+      <a href="#arm-stack">Software stack</a>
+      <a href="#arm-timeline">8-day timeline</a>
+      <a href="#arm-code">Code skeletons</a>
+      <a href="#arm-risk">Calibration &amp; risk</a>
+      <a href="#arm-refs">Reference builds</a>
+      <a href="#arm-demo">Demo-day checklist</a>
+    </div>
+    <div class="tocgroup">
+      <div class="tochead"><span class="swatch" style="background:var(--accent-sound)"></span>Project B</div>
+      <a href="#snd-overview">Overview</a>
+      <a href="#snd-bom">Bill of materials</a>
+      <a href="#snd-stack">Software stack</a>
+      <a href="#snd-timeline">8-day timeline</a>
+      <a href="#snd-code">Code skeletons</a>
+      <a href="#snd-risk">Data &amp; risk</a>
+      <a href="#snd-demo">Demo-day checklist</a>
+    </div>
+    <div class="tocgroup">
+      <a href="#compare">Compare &amp; decide</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- PROJECT A -->
+    <section class="project arm" id="arm-overview">
+      <span class="tag arm">Project A</span>
+      <h2>Vision-Guided Object Sorting Arm</h2>
+      <p class="deck">A fixed camera runs pretrained YOLOv8n over a tray, a laptop maps each detection to one of three physical zones, and a 4-DOF servo arm executes a pre-taught pick-and-place sequence into the matching bin. No inverse kinematics, no custom-trained model — the engineering is in the zone mapping, the serial handshake, and grasp reliability.</p>
+
+      <h3 class="subhead">Architecture</h3>
+      <p>Webcam → YOLOv8n inference (Python, laptop) → stable detection for 10+ consecutive frames → centroid mapped to nearest of 3 fixed zones → single-byte command over USB serial → Arduino/ESP32 runs the matching waypoint sequence (home → hover → lower → grip → lift → carry → release → home) → done-ack sent back → laptop waits for ack before issuing the next command.</p>
+
+      <h3 class="subhead" id="arm-bom">Bill of materials</h3>
+      <div class="tablewrap">
+        <table class="data-face">
+          <thead><tr><th>Item</th><th>Qty</th><th class="num">Unit (BDT)</th><th class="num">Subtotal</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>4-DOF acrylic arm kit w/ gripper</td><td>1</td><td class="num">2,200</td><td class="num">2,200</td><td class="wrap">Often bundles 4 servos — check before buying separately</td></tr>
+            <tr><td>MG996R metal-gear servo</td><td>2</td><td class="num">400</td><td class="num">800</td><td class="wrap">Base + shoulder — need the torque</td></tr>
+            <tr><td>SG90 micro servo</td><td>2</td><td class="num">180</td><td class="num">360</td><td class="wrap">Wrist + gripper — skip if kit bundles these</td></tr>
+            <tr><td>ESP32 / Arduino Uno</td><td>1</td><td class="num">550</td><td class="num">550</td><td class="wrap">Either works; ESP32 gives WiFi headroom for later</td></tr>
+            <tr><td>PCA9685 PWM driver</td><td>1</td><td class="num">300</td><td class="num">300</td><td class="wrap">Strongly recommended above 2 servos</td></tr>
+            <tr><td>External 5V 2–3A supply</td><td>1</td><td class="num">400</td><td class="num">400</td><td class="wrap">Never power servos off the MCU's 5V pin</td></tr>
+            <tr><td>USB webcam</td><td>1</td><td class="num">1,200</td><td class="num">1,200</td><td class="wrap">Skip this row entirely if using a laptop's built-in camera</td></tr>
+            <tr><td>Breadboard, jumpers, standoffs</td><td>1</td><td class="num">200</td><td class="num">200</td><td></td></tr>
+            <tr><td>Tray dividers, bins, tape</td><td>1</td><td class="num">150</td><td class="num">150</td><td class="wrap">Cardboard is fine</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="3">Total (with webcam)</td><td class="num">6,160</td><td class="wrap">≈ 4,960 without — either way, under ceiling</td></tr></tfoot>
+        </table>
+      </div>
+
+      <h3 class="subhead" id="arm-stack">Software stack</h3>
+      <ul class="checklist">
+        <li>Python 3.10+ on laptop: <code>ultralytics</code> (YOLOv8), <code>opencv-python</code>, <code>pyserial</code></li>
+        <li>Pretrained <code>yolov8n.pt</code> — COCO classes already include cup, bottle, cell phone, no training needed</li>
+        <li>Arduino IDE with <code>Servo.h</code> or <code>Adafruit_PWMServoDriver</code> if using the PCA9685</li>
+      </ul>
+
+      <h3 class="subhead" id="arm-timeline">8-day timeline</h3>
+      <div class="timeline">
+        <div class="day"><div class="num data-face">01</div><div><p class="title">Order &amp; assemble</p><p>Order every part today — shipping is your biggest untracked risk. Assemble the arm mechanically per kit instructions. No electronics yet: confirm every joint moves freely by hand first.</p></div></div>
+        <div class="day"><div class="num data-face">02</div><div><p class="title">Wire &amp; find waypoints</p><p>Wire servos through the PCA9685 with external power, common ground to the MCU. Sweep-test each servo for jitter/brownout. Hand-tune and record angle sets for: home, each zone's pick position, each bin's drop position, gripper-open, gripper-closed. Write these numbers down — this list is your most important artifact.</p></div></div>
+        <div class="day"><div class="num data-face">03</div><div><p class="title">Pick-place sequence + grasp smoke test</p><p>Write the Arduino routine that runs a full pick-to-bin sequence on a single serial byte. Trigger it manually from the Serial Monitor. Gate: 10 consecutive successful grasps on one zone before moving on. If the gripper is unreliable, fix it now — add a rubber/foam pad, adjust the closed angle — don't defer it.</p></div></div>
+        <div class="day"><div class="num data-face">04</div><div><p class="title">Get detection working</p><p>Stand up the YOLOv8n webcam script, draw live bounding boxes, print class + centroid to console. Verify it reliably detects your actual demo objects, under your actual demo lighting.</p></div></div>
+        <div class="day"><div class="num data-face">05</div><div><p class="title">Zone mapping + serial link</p><p>Map centroid pixel coordinates to the 3 fixed zones. Require a stable detection across ~10 frames before sending a command, to kill false triggers from flicker. Wire up <code>pyserial</code> to send the byte and wait for the done-ack.</p></div></div>
+        <div class="day"><div class="num data-face">06</div><div><p class="title">Full integration</p><p>Object in a zone → detected → correct byte sent → correct arm sequence runs → object lands in the correct bin. Debug timing so the laptop never sends a second command before the arm acks the first. Log 15–20 full cycles across all 3 zones; note the success rate.</p></div></div>
+        <div class="day"><div class="num data-face">07</div><div><p class="title">Robustness pass</p><p>Handle no-detection frames as an idle state, not an error. Add a retry-or-skip path for a likely-failed grasp. Tidy the wiring into something that survives being carried to the demo room. Record a backup demo video in case live hardware hiccups.</p></div></div>
+        <div class="day"><div class="num data-face">08</div><div><p class="title">Buffer + polish</p><p>Final test pass. Write the GitHub README (wiring photo, circuit diagram, demo GIF). Rehearse the viva: why fixed zones instead of inverse kinematics, how the serial handshake avoids race conditions, and the future-work framing toward learned grasp models.</p></div></div>
+      </div>
+
+      <h3 class="subhead" id="arm-code">Code skeletons</h3>
+      <p>Serial protocol: laptop sends a single ASCII digit for the target zone; Arduino replies <code>"D\n"</code> once the full sequence completes. Nothing more elaborate is needed for 3 zones.</p>
+      <div class="tablewrap">
+        <pre><code>// arduino_arm.ino — zone command -> waypoint sequence
+#include &lt;Servo.h&gt;
+Servo base, shoulder, wrist, gripper;
+
+struct Pose { int base, shoulder, wrist, gripper; };
+Pose HOME       = {90, 90, 90, 60};
+Pose ZONE_PICK[3] = { {40,120,70,60}, {90,120,70,60}, {140,120,70,60} };
+Pose BIN_DROP[3]  = { {40,60,110,60}, {90,60,110,60}, {140,60,110,60} };
+const int GRIP_OPEN = 60, GRIP_CLOSED = 140;
+
+void moveTo(Pose p) {
+  base.write(p.base); shoulder.write(p.shoulder); wrist.write(p.wrist);
+  delay(400); // let servos settle before the next command
+}
+
+void pickAndPlace(int zone) {
+  moveTo(ZONE_PICK[zone]);
+  gripper.write(GRIP_CLOSED); delay(300);
+  moveTo(HOME);
+  moveTo(BIN_DROP[zone]);
+  gripper.write(GRIP_OPEN); delay(300);
+  moveTo(HOME);
+}
+
+void setup() {
+  Serial.begin(9600);
+  base.attach(13); shoulder.attach(12); wrist.attach(11); gripper.attach(10);
+  moveTo(HOME);
+}
+
+void loop() {
+  if (Serial.available()) {
+    int zone = Serial.parseInt();
+    if (zone >= 0 && zone &lt;= 2) {
+      pickAndPlace(zone);
+      Serial.println("D"); // done-ack: laptop waits for this
+    }
+  }
+}</code></pre>
+      </div>
+      <div class="tablewrap" style="margin-top:.9rem;">
+        <pre><code># detect_and_send.py — YOLO detection -> zone -> serial byte
+from ultralytics import YOLO
+import cv2, serial, time
+
+model = YOLO("yolov8n.pt")
+ser = serial.Serial("COM5", 9600, timeout=2)  # adjust port
+cap = cv2.VideoCapture(0)
+ZONE_BOUNDS = [(0, 213), (213, 426), (426, 640)]  # 3 vertical bands, 640px frame
+stable_zone, stable_count = None, 0
+
+def zone_for_x(cx):
+    for i, (lo, hi) in enumerate(ZONE_BOUNDS):
+        if lo <= cx < hi:
+            return i
+    return None
+
+while True:
+    ok, frame = cap.read()
+    if not ok: break
+    results = model(frame, verbose=False)[0]
+    target_zone = None
+    for box in results.boxes:
+        cls_name = model.names[int(box.cls[0])]
+        if cls_name in ("cup", "bottle", "cell phone"):
+            x1, _, x2, _ = box.xyxy[0]
+            target_zone = zone_for_x(int((x1 + x2) / 2))
+            break
+
+    if target_zone == stable_zone and target_zone is not None:
+        stable_count += 1
+    else:
+        stable_zone, stable_count = target_zone, 0
+
+    if stable_count == 10:  # ~10 consecutive frames = confirmed, not flicker
+        ser.write(f"{stable_zone}\n".encode())
+        ser.read_until(b"D")  # block until the arm acks completion
+        stable_count = -1000  # cool down until a new object appears
+</code></pre>
+      </div>
+
+      <h3 class="subhead" id="arm-risk">Calibration &amp; risk notes</h3>
+      <div class="callout risk">
+        <span class="ctitle">Where this actually fails</span>
+        <p>Not detection — pretrained YOLO on cup/bottle/phone just works. It's grasp reliability: cheap servos have backlash, and a gripper that closes with inconsistent force drops things. Run the day-3 grasp gate before building anything on top of it.</p>
+      </div>
+      <div class="callout">
+        <span class="ctitle">Power</span>
+        <p>Servos draw current spikes that brown out an MCU if sharing its 5V rail. Separate supply, common ground — this single fix resolves most "the arm resets randomly" bugs.</p>
+      </div>
+      <div class="callout">
+        <span class="ctitle">Lighting</span>
+        <p>Calibrate zone boundaries and test detection under the exact lighting you'll demo in. A different room's glare or shadow can shift things enough to need re-tuning on the day.</p>
+      </div>
+
+      <h3 class="subhead" id="arm-refs">Reference builds</h3>
+      <p>None of these is a literal clone-and-submit match — most public tutorials sort by color, not YOLO class — but each covers a piece worth reading before you write your own version:</p>
+      <ul class="reflist">
+        <li><a href="https://github.com/newtonjeri/AI-based-Sorting-Robotic-Arm">newtonjeri/AI-based-Sorting-Robotic-Arm</a> — closest structural match to this build</li>
+        <li><a href="https://github.com/Mohammed-El-Kassoiri/vision-robotic-arm">Mohammed-El-Kassoiri/vision-robotic-arm</a> — CV detection driving arm actuation</li>
+        <li><a href="https://github.com/akshaymogaveera/Object-sorting-using-Robotic-arm-and-Image-processing">akshaymogaveera/Object-sorting-using-Robotic-arm-and-Image-processing</a> — servo/gripper control skeleton (color-based; swap in the YOLO step)</li>
+        <li><a href="https://www.hackster.io/HiwonderRobot/maxarm-arduino-robot-arm-conduct-color-sorting-in-two-ways-8b4dc1">MaxArm color sorting — Hackster.io</a> — reference for waypoint calibration workflow</li>
+      </ul>
+
+      <h3 class="subhead" id="arm-demo">Demo-day checklist</h3>
+      <ul class="checklist">
+        <li>Backup demo video recorded in advance, on a phone that isn't also running the demo</li>
+        <li>Fully charged power bank for the servo supply, not just mains</li>
+        <li>Objects used for calibration are the exact objects brought to the demo</li>
+        <li>One person owns "restart the whole stack" if something freezes — decided in advance, not improvised on stage</li>
+      </ul>
+    </section>
+
+    <!-- PROJECT B -->
+    <section class="project sound" id="snd-overview">
+      <span class="tag sound">Project B</span>
+      <h2>TinyML Sound Anomaly Detector</h2>
+      <p class="deck">An ESP32 with an I2S microphone runs an on-device classifier — trained in Edge Impulse — that listens for specific sound events (glass breaking, a distress call) against a background-noise baseline, and fires a buzzer/LED/notification the moment it hears one. No moving parts, inference runs entirely on the microcontroller.</p>
+
+      <h3 class="subhead">Architecture</h3>
+      <p>I2S mic streams audio → ESP32 extracts MFCC features on-device → trained neural network (exported from Edge Impulse) classifies the window → if top class ≠ "background" and confidence exceeds threshold, fire alert with a debounce window so one event doesn't retrigger repeatedly.</p>
+
+      <h3 class="subhead" id="snd-bom">Bill of materials</h3>
+      <div class="tablewrap">
+        <table class="data-face">
+          <thead><tr><th>Item</th><th>Qty</th><th class="num">Unit (BDT)</th><th class="num">Subtotal</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>ESP32 Wroom-32 dev board</td><td>1</td><td class="num">550</td><td class="num">550</td><td></td></tr>
+            <tr><td>INMP441 I2S MEMS mic</td><td>1</td><td class="num">380</td><td class="num">380</td><td class="wrap">Digital output — far cleaner than an analog electret mic</td></tr>
+            <tr><td>Buzzer + LED</td><td>1 set</td><td class="num">80</td><td class="num">80</td><td></td></tr>
+            <tr><td>SSD1306 OLED (optional)</td><td>1</td><td class="num">300</td><td class="num">300</td><td class="wrap">Shows live predicted class — nice for a demo table</td></tr>
+            <tr><td>Breadboard + jumpers</td><td>1</td><td class="num">180</td><td class="num">180</td><td></td></tr>
+            <tr><td>USB power bank</td><td>1</td><td class="num">300</td><td class="num">300</td><td class="wrap">For a portable, cable-free demo</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="3">Total</td><td class="num">1,790</td><td class="wrap">Leaves ~5,000 BDT of buffer against the ceiling</td></tr></tfoot>
+        </table>
+      </div>
+
+      <h3 class="subhead" id="snd-stack">Software stack</h3>
+      <ul class="checklist">
+        <li>Edge Impulse Studio (free tier, browser) — data collection, MFCC feature extraction, training, one-click Arduino export</li>
+        <li>Arduino IDE for the I2S driver + the exported Edge Impulse inference library</li>
+        <li>Optional: ESP32 WiFi + a webhook/Telegram bot call on detection, for a push-notification demo</li>
+      </ul>
+
+      <h3 class="subhead" id="snd-timeline">8-day timeline</h3>
+      <div class="timeline">
+        <div class="day"><div class="num data-face">01</div><div><p class="title">Order &amp; wire</p><p>Order parts. Pick your 3 classes precisely — e.g. glass-break, distress-call, background-normal. The background/normal class is mandatory: without it the model will treat any sound as an event. Wire the INMP441 to the ESP32's I2S pins (well-documented, standard pinout).</p></div></div>
+        <div class="day"><div class="num data-face">02</div><div><p class="title">Prove the audio path</p><p>Flash Edge Impulse's data-forwarder firmware, confirm raw audio streams cleanly into Edge Impulse Studio over serial. This connectivity check is the main "does the hardware work" gate — clear it early, not on day 6.</p></div></div>
+        <div class="day"><div class="num data-face">03</div><div><p class="title">Collect data (part 1)</p><p>Record samples in the actual room you'll demo in, at the actual distance and volume you'll demo at. Label clips in Edge Impulse Studio as you go, rather than batching labeling for later.</p></div></div>
+        <div class="day"><div class="num data-face">04</div><div><p class="title">Collect data (part 2)</p><p>Aim for 3–5 minutes of audio per class minimum. Deliberately record the room's own background chatter/hum as the "normal" class — this is what actually suppresses false alarms later.</p></div></div>
+        <div class="day"><div class="num data-face">05</div><div><p class="title">Build &amp; train the impulse</p><p>MFCC/MFE feature block + a small neural network classifier in Edge Impulse Studio. Train, read the confusion matrix. Whichever class confuses another, go back and collect more/cleaner samples for that pair — this iteration is normal, budget real time for it.</p></div></div>
+        <div class="day"><div class="num data-face">06</div><div><p class="title">Deploy to hardware</p><p>Export as an Arduino library (EON compiler, for a smaller flash footprint). Flash to ESP32. Wire the buzzer/LED (and OLED if used) to fire on the top predicted class above a confidence threshold — start around 0.8.</p></div></div>
+        <div class="day"><div class="num data-face">07</div><div><p class="title">Live-tune in the real room</p><p>Test repeatedly in the actual demo environment. Tune the confidence threshold against false positives. Add a 3–5 second debounce so one event doesn't spam the buzzer. Explicitly test that normal talking doesn't trigger "distress."</p></div></div>
+        <div class="day"><div class="num data-face">08</div><div><p class="title">Buffer + polish</p><p>Final test pass. GitHub README with the Edge Impulse project link, confusion matrix screenshot, wiring diagram. Rehearse explaining MFCC features and why on-device inference (not cloud) is the point of a microcontroller project.</p></div></div>
+      </div>
+
+      <h3 class="subhead" id="snd-code">Code skeleton</h3>
+      <p>Edge Impulse's exported library does the feature extraction and inference; your code is the thin layer around it that decides when to act.</p>
+      <div class="tablewrap">
+        <pre><code>// esp32_sound_alert.ino — skeleton around an Edge Impulse export
+#include &lt;YOUR_PROJECT_inferencing.h&gt;  // generated by Edge Impulse export
+#include &lt;driver/i2s.h&gt;
+
+const float CONFIDENCE_THRESHOLD = 0.80;
+const unsigned long DEBOUNCE_MS = 4000;
+unsigned long lastAlertAt = 0;
+
+void fireAlert(const char *label) {
+  unsigned long now = millis();
+  if (now - lastAlertAt < DEBOUNCE_MS) return; // swallow repeat triggers
+  lastAlertAt = now;
+  digitalWrite(BUZZER_PIN, HIGH);
+  Serial.printf("ALERT: %s\n", label);
+  delay(500);
+  digitalWrite(BUZZER_PIN, LOW);
+}
+
+void loop() {
+  signal_t signal;
+  // ... fill `signal` from the I2S ring buffer per Edge Impulse's example ...
+  ei_impulse_result_t result;
+  run_classifier(&signal, &result, false);
+
+  float best = 0; const char *bestLabel = "background";
+  for (size_t i = 0; i < EI_CLASSIFIER_LABEL_COUNT; i++) {
+    if (result.classification[i].value > best) {
+      best = result.classification[i].value;
+      bestLabel = result.classification[i].label;
+    }
+  }
+  if (strcmp(bestLabel, "background") != 0 && best >= CONFIDENCE_THRESHOLD) {
+    fireAlert(bestLabel);
+  }
+}</code></pre>
+      </div>
+
+      <h3 class="subhead" id="snd-risk">Data &amp; risk notes</h3>
+      <div class="callout risk">
+        <span class="ctitle">Where this actually fails</span>
+        <p>Not the hardware — there are no moving parts to break. It's data: too little background-noise coverage means real-room hum gets misclassified as an event. Budget two full days for recording, not one rushed evening.</p>
+      </div>
+      <div class="callout">
+        <span class="ctitle">Confidence threshold is your main dial</span>
+        <p>Too low and it false-alarms on every cough; too high and it misses real events. Tune this in the actual demo room, not your bedroom.</p>
+      </div>
+
+      <h3 class="subhead" id="snd-demo">Demo-day checklist</h3>
+      <ul class="checklist">
+        <li>Test in the actual demo room's ambient noise level beforehand, not just at home</li>
+        <li>Confidence threshold locked in the night before, not adjusted live</li>
+        <li>Power bank charged; USB cable as backup</li>
+        <li>A rehearsed, deliberately triggered "event" sound ready to demonstrate on command</li>
+      </ul>
+    </section>
+
+    <section class="compare" id="compare">
+      <h2>Compare &amp; decide</h2>
+      <div class="tablewrap">
+        <table class="data-face">
+          <thead><tr><th>&nbsp;</th><th>A · Sorting Arm</th><th>B · Sound Detector</th></tr></thead>
+          <tbody>
+            <tr><td>Approx. cost</td><td class="num">4,960–6,160 BDT</td><td class="num">1,790 BDT</td></tr>
+            <tr><td>Main failure mode</td><td class="wrap">Grasp reliability (mechanical)</td><td class="wrap">Data coverage (false alarms)</td></tr>
+            <tr><td>Moving parts</td><td class="wrap">Yes — 4 servos, gripper</td><td class="wrap">None</td></tr>
+            <tr><td>Riskiest day</td><td class="wrap">Day 3 grasp gate</td><td class="wrap">Day 5 training/confusion matrix</td></tr>
+            <tr><td>Demo flashiness</td><td class="wrap">High — visible physical action</td><td class="wrap">Moderate — needs a live trigger moment</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:1rem;">Both are real, defensible, non-cliché builds relative to what's already on the class sheet. If sir picks Project A, treat the day-3 grasp gate as the go/no-go checkpoint for the whole build. If sir picks Project B, treat days 3–4 data collection as non-negotiable — do not compress them to claw back time elsewhere.</p>
+    </section>
+
+  </main>
+</div>
+
+<footer class="foot">
+  Build guide covers both proposals submitted for the microcontroller sessional. Keep this open on a second monitor during the build — the day-by-day sections are meant to be checked off, not read once.
+</footer>
