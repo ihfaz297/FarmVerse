@@ -5,7 +5,7 @@
 
 ## 1. Physical Layout & Component Setup
 
-![Robot Arm Concept](C:/Users/ADIB/.gemini/antigravity/brain/16d0f616-acfd-4b19-a4c3-70fb65951389/robot_arm_setup_1783362976874.png)
+![Robot Arm Concept](./assets/robot_arm_setup.png)
 
 ### Hardware Specifications to Ensure:
 * **Microcontroller:** ESP32 or Arduino Uno.
